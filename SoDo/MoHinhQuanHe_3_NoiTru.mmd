@@ -1,0 +1,202 @@
+---
+title: Mô hình quan hệ — Phân hệ nhập viện, nội trú và ra viện
+---
+erDiagram
+    nguoi_dung {
+        serial id PK
+        varchar ho_ten
+        varchar sdt UK
+        varchar email UK
+        varchar mat_khau_hash
+        varchar vai_tro
+        boolean trang_thai
+        timestamp ngay_tao
+    }
+    khoa_phong {
+        serial id PK
+        varchar ten_khoa
+        varchar ma
+        text mo_ta
+        varchar vi_tri
+    }
+    ho_so_benh_nhan {
+        serial id PK
+        varchar ma_benh_nhan UK
+        varchar ho_ten
+        date ngay_sinh
+        varchar gioi_tinh
+        varchar dia_chi
+        varchar sdt
+        varchar so_bhyt
+        int nguoi_dung_id FK
+        int bac_si_mong_muon_id FK
+        date ngay_tai_kham
+        text ghi_chu_tai_kham
+        int bac_si_tai_kham_id FK
+    }
+    lich_hen {
+        serial id PK
+        varchar ma_lich_hen UK
+        varchar trang_thai
+        int so_thu_tu
+        timestamp ngay_tao
+        int ho_so_id FK
+        int khung_gio_id FK
+        int khoa_id FK
+    }
+    phieu_kham_benh {
+        serial id PK
+        varchar ma_kcb
+        varchar so_benh_an
+        date ngay_dk
+        boolean noi_tru
+        boolean dtnt
+        boolean dkrv
+        boolean ttrv
+        boolean chuyen_vien
+        boolean cap_cuu
+        varchar ten_bn
+        varchar gioi_tinh
+        date ngay_sinh
+        varchar tuoi
+        varchar dan_toc
+        varchar dia_chi
+        varchar nghe_nghiep
+        varchar doi_tuong
+        varchar so_the
+        varchar ky_hieu
+        date han_the
+        varchar ty_le_the
+        varchar dia_chi_the
+        varchar noi_dk_kcb
+        varchar noi_cap
+        date ngay_vao
+        varchar buong
+        varchar giuong
+        boolean kham_lai
+        boolean nho_kham
+        boolean hoan_kham
+        date ngay_kham
+        varchar bs_kham
+        varchar chuyen_khoa
+        text cdtt
+        text ghi_chu
+        text trieu_chung
+        text chan_doan_so_bo
+        text ghi_chu_kb
+        text ket_luan
+        varchar huyet_ap
+        varchar mach
+        varchar nhiet_do
+        varchar nhip_tho
+        varchar chieu_cao
+        varchar can_nang
+        varchar bmi
+        varchar spo2
+        varchar vong_2
+        text ten_benh
+        varchar ma_icd
+        text dien_giai
+        timestamp ngay_tao
+        int ho_so_id FK
+        int lich_hen_id FK
+        int nguoi_tao_id FK
+    }
+    dien_bien_dieu_tri {
+        serial id PK
+        varchar thoi_diem
+        text dien_bien
+        text chi_dinh
+        timestamp ngay_tao
+        int phieu_kham_id FK
+        int bac_si_id FK
+    }
+    phieu_ra_vien {
+        serial id PK
+        varchar tinh_trang
+        text ket_luan_suc_khoe
+        text chan_doan_ra_vien
+        date ngay_ra_vien
+        varchar trang_thai
+        timestamp ngay_tao
+        timestamp ngay_cap_nhat
+        int ho_so_id FK
+        int bac_si_id FK
+    }
+    giuong {
+        unique khoa_ma_uq UK
+        serial id PK
+        varchar ma
+        varchar phong
+        varchar loai
+        varchar trang_thai
+        boolean hoat_dong
+        timestamp ngay_cap_nhat
+        int khoa_id FK
+    }
+    yeu_cau_nhap_vien {
+        serial id PK
+        varchar ma_yeu_cau UK
+        varchar trang_thai
+        varchar uu_tien
+        text ly_do_uu_tien
+        varchar chan_doan_chinh
+        varchar ma_icd
+        text ly_do
+        text canh_bao
+        varchar ho_tro_di_chuyen
+        date ngay_du_kien
+        text ly_do_ket_thuc
+        varchar doi_tuong_tt
+        varchar bhyt_trang_thai
+        text ghi_chu_tiep_nhan
+        int phien_ban
+        timestamp thoi_gian_ky
+        timestamp thoi_gian_tiep_nhan
+        timestamp ngay_cap_nhat
+        int ho_so_id FK
+        int lich_hen_id FK
+        int khoa_id FK
+        int bac_si_id FK
+        int nguoi_tiep_nhan_id FK
+    }
+    dot_noi_tru {
+        serial id PK
+        varchar so_vao_vien UK
+        varchar trang_thai
+        varchar doi_tuong_tt
+        varchar bhyt_trang_thai
+        text ghi_chu
+        timestamp thoi_gian_vao
+        timestamp thoi_gian_khoa_nhan
+        timestamp thoi_gian_ra
+        timestamp ngay_cap_nhat
+        int yeu_cau_id FK,UK
+        int ho_so_id FK
+        int khoa_id FK
+        int giuong_id FK
+        int nguoi_lam_thu_tuc_id FK
+        int nguoi_khoa_nhan_id FK
+    }
+    nguoi_dung ||--|{ ho_so_benh_nhan : "nguoi_dung_id"
+    ho_so_benh_nhan ||--|{ lich_hen : "ho_so_id"
+    khoa_phong ||--|{ lich_hen : "khoa_id"
+    ho_so_benh_nhan ||--o{ phieu_kham_benh : "ho_so_id"
+    lich_hen ||--o{ phieu_kham_benh : "lich_hen_id"
+    nguoi_dung ||--o{ phieu_kham_benh : "nguoi_tao_id"
+    phieu_kham_benh ||--o{ dien_bien_dieu_tri : "phieu_kham_id"
+    nguoi_dung ||--o{ dien_bien_dieu_tri : "bac_si_id"
+    ho_so_benh_nhan ||--|{ phieu_ra_vien : "ho_so_id"
+    nguoi_dung ||--o{ phieu_ra_vien : "bac_si_id"
+    khoa_phong ||--|{ giuong : "khoa_id"
+    ho_so_benh_nhan ||--|{ yeu_cau_nhap_vien : "ho_so_id"
+    lich_hen ||--o{ yeu_cau_nhap_vien : "lich_hen_id"
+    khoa_phong ||--o{ yeu_cau_nhap_vien : "khoa_id"
+    nguoi_dung ||--o{ yeu_cau_nhap_vien : "bac_si_id"
+    nguoi_dung ||--o{ yeu_cau_nhap_vien : "nguoi_tiep_nhan_id"
+    yeu_cau_nhap_vien ||--|| dot_noi_tru : "yeu_cau_id"
+    ho_so_benh_nhan ||--o{ dot_noi_tru : "ho_so_id"
+    khoa_phong ||--o{ dot_noi_tru : "khoa_id"
+    giuong ||--o{ dot_noi_tru : "giuong_id"
+    nguoi_dung ||--o{ dot_noi_tru : "nguoi_lam_thu_tuc_id"
+    nguoi_dung ||--o{ dot_noi_tru : "nguoi_khoa_nhan_id"

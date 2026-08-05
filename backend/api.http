@@ -1,0 +1,61 @@
+### File test API nhanh — dùng với extension "REST Client" (VS Code)
+### Bấm "Send Request" phía trên mỗi block. Chạy lần lượt từ trên xuống.
+@base = http://localhost:3000/api
+
+### 1. Đăng nhập tài khoản bệnh nhân demo (mật khẩu: 123456)
+# @name login
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{ "tai_khoan": "benhnhan@demo.vn", "mat_khau": "123456" }
+
+### Lưu token tự động từ phản hồi trên
+@token = {{login.response.body.access_token}}
+
+### 2. Xem thông tin tài khoản hiện tại (cần JWT)
+GET {{base}}/auth/me
+Authorization: Bearer {{token}}
+
+### 3. Lấy danh sách khoa phòng (công khai)
+GET {{base}}/departments
+
+### 4. Lấy bác sĩ theo khoa (khoa id = 1)
+GET {{base}}/doctors?khoa=1
+
+### 5. Lấy khung giờ trống (bác sĩ 1, đổi ngày cho đúng dữ liệu seed)
+GET {{base}}/slots?bacSi=1&ngay=2026-07-05
+
+### 6. Đặt lịch khám (cần JWT) — đổi khung_gio_id theo bước 5
+POST {{base}}/appointments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "khung_gio_id": 1, "ho_ten": "Trần Mai Phương", "sdt": "0912345678" }
+
+### 7. Xem lịch hẹn của tôi
+GET {{base}}/appointments/me
+Authorization: Bearer {{token}}
+
+### 8. Đăng ký tài khoản mới (lấy OTP trước)
+# @name otp
+POST {{base}}/auth/request-otp
+Content-Type: application/json
+
+{ "sdt": "0987000111" }
+
+### 9. Đăng ký với OTP nhận được ở bước 8
+POST {{base}}/auth/register
+Content-Type: application/json
+
+{ "ho_ten": "Người Dùng Mới", "sdt": "0987000111", "mat_khau": "123456", "otp": "{{otp.response.body.otp_demo}}" }
+
+### 10. Đăng nhập ADMIN rồi xem báo cáo
+# @name adminLogin
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{ "tai_khoan": "admin@demo.vn", "mat_khau": "123456" }
+
+###
+GET {{base}}/admin/reports
+Authorization: Bearer {{adminLogin.response.body.access_token}}
