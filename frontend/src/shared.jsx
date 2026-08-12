@@ -28,7 +28,7 @@ const T = {
 // ============================================================================
 //  LỚP GỌI API + QUẢN LÝ ĐĂNG NHẬP  (kết nối backend NestJS tại :3000)
 // ============================================================================
-const API_BASE = "http://localhost:3000/api";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 // Lưu token trong bộ nhớ (không dùng localStorage trong môi trường sandbox)
 const store = {
